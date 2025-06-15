@@ -1,5 +1,6 @@
 "use client";
 
+import { Header } from "@/components/common/header";
 import { Button } from "@/components/ui/button";
 // import Link from "next/link";
 import { useState } from "react";
@@ -54,6 +55,7 @@ export default function Search() {
 
   return (
     <>
+      <Header />
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-3">楽曲で検索</h2>
         <div className="flex flex-wrap gap-2">
