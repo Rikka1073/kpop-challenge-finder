@@ -49,9 +49,15 @@ export default function Search() {
     (item, index, self) => index === self.findIndex((v) => v.group === item.group)
   );
 
+  console.log("uniqueGroups", uniqueGroups);
+
   const uniqueSong = demoData.filter(
     (item, index, self) => index === self.findIndex((v) => v.song === item.song)
   );
+
+  const filteredDemoData = demoData.filter((item) => item.song === id || item.group === id);
+
+  console.log("uniqueSong", uniqueSong);
 
   return (
     <>
@@ -81,15 +87,16 @@ export default function Search() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-3">結果</h2>
-        {demoData &&
-          demoData
-            .filter((item) => item.song === id || item.group === id)
-            .map((item) => (
-              <div key={item.id} className="mb-4">
-                <div>{item.song}</div>
-              </div>
-            ))}
+        <div className="flex justify-between mb-4 items-center">
+          <h2 className="text-2xl font-bold mb-3">結果</h2>
+          <p className="text-2xl  mb-3">{filteredDemoData.length}件</p>
+        </div>
+        {filteredDemoData &&
+          filteredDemoData.map((item) => (
+            <div key={item.id} className="mb-4">
+              <div>{item.song}</div>
+            </div>
+          ))}
       </div>
     </>
   );
