@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/common/header";
+import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 // import Link from "next/link";
 import { useState } from "react";
@@ -49,55 +50,54 @@ export default function Search() {
     (item, index, self) => index === self.findIndex((v) => v.group === item.group)
   );
 
-  console.log("uniqueGroups", uniqueGroups);
-
   const uniqueSong = demoData.filter(
     (item, index, self) => index === self.findIndex((v) => v.song === item.song)
   );
 
+  // 選択されたグループまたは楽曲に基づいてデモデータをフィルタリング
   const filteredDemoData = demoData.filter((item) => item.song === id || item.group === id);
-
-  console.log("uniqueSong", uniqueSong);
 
   return (
     <>
-      <Header />
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-3">楽曲で検索</h2>
-        <div className="flex flex-wrap gap-2">
-          {uniqueSong &&
-            uniqueSong.map((item) => (
-              <Button key={item.id} id="item.id" onClick={() => setId(item.song)}>
-                #{item.song}
-              </Button>
+      <Layout>
+        <Header />
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-3">楽曲で検索</h2>
+          <div className="flex flex-wrap gap-2">
+            {uniqueSong &&
+              uniqueSong.map((item) => (
+                <Button key={item.id} id="item.id" onClick={() => setId(item.song)}>
+                  #{item.song}
+                </Button>
+              ))}
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-3">グループで検索</h2>
+          <div className="flex flex-wrap gap-2">
+            {uniqueGroups &&
+              uniqueGroups.map((item) => (
+                <Button key={item.id} id="item.id" onClick={() => setId(item.group)}>
+                  #{item.group}
+                </Button>
+              ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="flex justify-between mb-4 items-center">
+            <h2 className="text-2xl font-bold mb-3">結果</h2>
+            <p className="text-2xl  mb-3">{filteredDemoData.length}件</p>
+          </div>
+          {filteredDemoData &&
+            filteredDemoData.map((item) => (
+              <div key={item.id} className="mb-4">
+                <div>{item.song}</div>
+              </div>
             ))}
         </div>
-      </div>
-
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-3">グループで検索</h2>
-        <div className="flex flex-wrap gap-2">
-          {uniqueGroups &&
-            uniqueGroups.map((item) => (
-              <Button key={item.id} id="item.id" onClick={() => setId(item.group)}>
-                #{item.group}
-              </Button>
-            ))}
-        </div>
-      </div>
-
-      <div>
-        <div className="flex justify-between mb-4 items-center">
-          <h2 className="text-2xl font-bold mb-3">結果</h2>
-          <p className="text-2xl  mb-3">{filteredDemoData.length}件</p>
-        </div>
-        {filteredDemoData &&
-          filteredDemoData.map((item) => (
-            <div key={item.id} className="mb-4">
-              <div>{item.song}</div>
-            </div>
-          ))}
-      </div>
+      </Layout>
     </>
   );
 }
