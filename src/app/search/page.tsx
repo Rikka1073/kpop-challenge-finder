@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/common/header";
+import { VideoCard } from "@/components/feature/videoCard";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 // import Link from "next/link";
@@ -41,6 +42,37 @@ export default function Search() {
       id: 5,
       group: "aespa",
       song: "supernova",
+      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
+    },
+    {
+      id: 6,
+      group: "LE_SSERAFIM",
+      song: "supernova",
+      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
+    },
+
+    {
+      id: 7,
+      group: "aespa",
+      song: "UNFORGIVEN",
+      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
+    },
+    {
+      id: 8,
+      group: "LE_SSERAFIM",
+      song: "Whiplash",
+      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
+    },
+    {
+      id: 9,
+      group: "aespa",
+      song: "ANTIFRAGILE",
+      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
+    },
+    {
+      id: 10,
+      group: "aespa",
+      song: "UNFORGIVEN",
       link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
     },
   ];
@@ -90,12 +122,14 @@ export default function Search() {
             <h2 className="text-2xl font-bold mb-3">結果</h2>
             <p className="text-2xl  mb-3">{filteredDemoData.length}件</p>
           </div>
-          {filteredDemoData &&
-            filteredDemoData.map((item) => (
-              <div key={item.id} className="mb-4">
-                <div>{item.song}</div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredDemoData &&
+              filteredDemoData.map((video) => (
+                <div key={video.id} className="mb-4">
+                  <VideoCard video={video} />
+                </div>
+              ))}
+          </div>
         </div>
       </Layout>
     </>
