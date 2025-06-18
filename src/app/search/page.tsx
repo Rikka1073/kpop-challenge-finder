@@ -119,8 +119,7 @@ export default function Search() {
 
         <div>
           <div className="flex justify-between mb-4 items-center">
-            <h2 className="text-2xl font-bold mb-3">結果</h2>
-            <p className="text-2xl  mb-3">{filteredDemoData.length}件</p>
+            <h2 className="text-2xl font-bold mb-3">検索結果（{filteredDemoData.length}件）</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredDemoData &&
