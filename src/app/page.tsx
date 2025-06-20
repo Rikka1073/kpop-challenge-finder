@@ -1,9 +1,12 @@
 import { Header } from "@/components/common/header";
 import { Layout } from "@/components/layout/layout";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 export default async function Home() {
-  const videoId = "GqbK3rcQkg8";
+  const videoId = "illwwKfv1UY";
   const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
   const response = await fetch(
@@ -17,14 +20,35 @@ export default async function Home() {
     <>
       <Layout>
         <Header />
-        <Button>テストです</Button>
-        <h1 data-testid="title">Home</h1>
         {data &&
           data.items.map((video: any) => (
             <div key={video.id}>
-              <h2>{video.snippet.title}</h2>
-              <div>{video.statistics.likeCount}</div>
-              <div>{video.snippet.thumbnails.default.url}</div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                <div className="rounded-2xl transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105">
+                  <div className="relative">
+                    <Image
+                      src={video.snippet.thumbnails.maxres.url}
+                      alt={video.snippet.title}
+                      width={360}
+                      height={640}
+                      className="w-full aspect-[9/16] object-cover rounded-t-2xl"
+                    />
+                    <Badge className="absolute bottom-2 left-2">
+                      {video.statistics.viewCount} viwes
+                    </Badge>
+                  </div>
+                  <Card className="rounded-b-xl px-2">
+                    <CardTitle className="mb-6">{video.snippet.title}</CardTitle>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge className="bg-fuchsia-100 text-purple-600 font-bold">aespa</Badge>
+                      <Badge className="bg-fuchsia-100 text-purple-600 font-bold">
+                        LE SSERAFIM
+                      </Badge>
+                    </div>
+                    <Badge className="bg-red-100 text-red-600 font-bold">#Spicy</Badge>
+                  </Card>
+                </div>
+              </div>
             </div>
           ))}
       </Layout>
