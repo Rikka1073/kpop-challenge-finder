@@ -93,12 +93,22 @@ export default function Search() {
     <>
       <Layout>
         <Header />
+        <h2 className="text-4xl font-bold mb-3 text-center text-violet-500">
+          ダンスチャレンジ検索
+        </h2>
+        <div className="text-center mb-6">お気に入りの楽曲やグループを選んで検索しよう！</div>
+
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-3">楽曲で検索</h2>
+          <h3 className="text-2xl font-bold mb-3">楽曲で検索</h3>
           <div className="flex flex-wrap gap-2">
             {uniqueSong &&
               uniqueSong.map((item) => (
-                <Button key={item.id} id="item.id" onClick={() => setId(item.song)}>
+                <Button
+                  key={item.id}
+                  id="item.id"
+                  onClick={() => setId(item.song)}
+                  className="rounded-2xl"
+                >
                   #{item.song}
                 </Button>
               ))}
@@ -106,11 +116,16 @@ export default function Search() {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-3">グループで検索</h2>
+          <h3 className="text-2xl font-bold mb-3">グループで検索</h3>
           <div className="flex flex-wrap gap-2">
             {uniqueGroups &&
               uniqueGroups.map((item) => (
-                <Button key={item.id} id="item.id" onClick={() => setId(item.group)}>
+                <Button
+                  key={item.id}
+                  id="item.id"
+                  onClick={() => setId(item.group)}
+                  className="rounded-2xl"
+                >
                   #{item.group}
                 </Button>
               ))}
@@ -119,7 +134,7 @@ export default function Search() {
 
         <div>
           <div className="flex justify-between mb-4 items-center">
-            <h2 className="text-2xl font-bold mb-3">検索結果（{filteredDemoData.length}件）</h2>
+            <h3 className="text-2xl font-bold mb-3">検索結果（{filteredDemoData.length}件）</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredDemoData &&
