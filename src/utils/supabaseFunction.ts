@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 
-export const fetchData = async () => {
+export const fetchVideos = async () => {
   const { data, error } = await supabase.from("videos").select("*");
   if (error) {
     console.log("Error fetching data:", error);
@@ -12,6 +12,22 @@ export const fetchData = async () => {
     return data;
   } else {
     console.log("No data found");
+    return [];
+  }
+};
+
+export const fetchSongs = async () => {
+  const { data, error } = await supabase.from("songs").select("*");
+  if (error) {
+    console.log("Error fetching songs:", error);
+  } else {
+    console.log("Songs fetched successfully:", data);
+  }
+
+  if (data) {
+    return data;
+  } else {
+    console.log("No songs found");
     return [];
   }
 };
