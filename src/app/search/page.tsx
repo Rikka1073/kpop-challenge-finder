@@ -4,91 +4,34 @@ import { Header } from "@/components/common/header";
 import { VideoCard } from "@/components/feature/videoCard";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
-// import Link from "next/link";
+import { fetchSongs } from "@/utils/supabaseFunction";
 import { useState } from "react";
+import useSWR from "swr";
 
 export default function Search() {
+  // 選択されたグループまたは楽曲のIDを管理するための状態
   const [id, setId] = useState("");
 
-  // デモデータ
-  // 本来はAPIから取得することを想定
-  // ここでは簡単なデモデータを使用
-  const demoData = [
-    {
-      id: 1,
-      group: "LE_SSERAFIM",
-      song: "UNFORGIVEN",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 2,
-      group: "aespa",
-      song: "Whiplash",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 3,
-      group: "LE_SSERAFIM",
-      song: "ANTIFRAGILE",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 4,
-      group: "LE_SSERAFIM",
-      song: "UNFORGIVEN",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 5,
-      group: "aespa",
-      song: "supernova",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 6,
-      group: "LE_SSERAFIM",
-      song: "supernova",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
+  // SWRを使用してデータを取得
+  const { data, error, isLoading } = useSWR("songs", fetchSongs);
 
-    {
-      id: 7,
-      group: "aespa",
-      song: "UNFORGIVEN",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 8,
-      group: "LE_SSERAFIM",
-      song: "Whiplash",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 9,
-      group: "aespa",
-      song: "ANTIFRAGILE",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-    {
-      id: 10,
-      group: "aespa",
-      song: "UNFORGIVEN",
-      link: "https://www.youtube.com/shorts/GqbK3rcQkg8?feature=share",
-    },
-  ];
+  if (error) {
+    return <div>エラーが発生しました</div>;
+  } else if (isLoading || !data) {
+    return <div>読み込み中...</div>;
+  }
 
   // デモデータからグループと楽曲のユニークな値を取得
-  const uniqueGroups = demoData.filter(
-    (item, index, self) => index === self.findIndex((v) => v.group === item.group)
+  const uniqueGroups = data.filter(
+    (item, index, self) => index === self.findIndex((v) => v.group_name === item.group_name)
   );
 
-  const uniqueSong = demoData.filter(
-    (item, index, self) => index === self.findIndex((v) => v.song === item.song)
+  const uniqueSong = data.filter(
+    (item, index, self) => index === self.findIndex((v) => v.song_name === item.song_name)
   );
 
-  // 選択されたグループまたは楽曲に基づいてデモデータをフィルタリング
-  const filteredDemoData = demoData.filter((item) => item.song === id || item.group === id);
-
+  // 選択されたグループまたは楽曲に基づいてデータをフィルタリング
+  const filteredDemoData = data.filter((item) => item.song_name === id || item.group_name === id);
   return (
     <>
       <Layout>
@@ -106,10 +49,10 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => setId(item.song)}
+                  onClick={() => setId(item.song_name)}
                   className="rounded-2xl"
                 >
-                  #{item.song}
+                  #{item.song_name}
                 </Button>
               ))}
           </div>
@@ -123,10 +66,10 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => setId(item.group)}
+                  onClick={() => setId(item.group_name)}
                   className="rounded-2xl"
                 >
-                  #{item.group}
+                  #{item.group_name}
                 </Button>
               ))}
           </div>
