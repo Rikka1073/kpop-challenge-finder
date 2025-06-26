@@ -3,5 +3,5 @@ export type videos = {
   youtube_id: string;
   title: string;
   thumbnail_url: string;
-  view_count: string;
+  view_count: number;
 };
