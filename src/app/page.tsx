@@ -1,31 +1,32 @@
+// UIコンポーネント
 import { Header } from "@/components/common/header";
 import { Layout } from "@/components/layout/layout";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import { fetchData } from "@/utils/supabaseFunction";
+// 型
+import { videos } from "@/types";
+// ユーティリティ関数
+import { fetchVideos } from "@/utils/supabaseFunction";
+
 import Image from "next/image";
 
 export default async function Home() {
-  // const videoId = "illwwKfv1UY";
-  // const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-
-  // const response = await fetch(
-  //   `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoId}&key=${apiKey}`
-  // );
-
-  // const data = await response.json();
-  // console.log(data.items);
-
-  const data = await fetchData();
+  // データを取得する関数を呼び出す
+  const data = await fetchVideos();
   console.log("Fetched data:", data);
 
-  type videos = {
-    id: string;
-    youtube_id: string;
-    title: string;
-    thumbnail_url: string;
-    view_count: string;
+  // view_countのフォーマット関数
+  const formatViewCount = (views: number) => {
+    console.log("Original view count:", views);
+    if (views >= 1000000) {
+      const formattedViews = (views / 1000000).toFixed(1) + "M";
+      return formattedViews;
+    } else if (views >= 1000) {
+      const formattedViews = (views / 1000).toFixed(1) + "K";
+      return formattedViews;
+    } else {
+      return views.toString();
+    }
   };
 
   return (
@@ -45,7 +46,9 @@ export default async function Home() {
                       height={640}
                       className="w-full aspect-[9/16] object-cover rounded-t-2xl"
                     />
-                    <Badge className="absolute bottom-2 left-2">{video.view_count} viwes</Badge>
+                    <Badge className="absolute bottom-2 left-2">
+                      {formatViewCount(video.view_count)} viwes
+                    </Badge>
                   </div>
                   <Card className="rounded-b-xl px-2">
                     <CardTitle className="mb-6">{video.title}</CardTitle>
