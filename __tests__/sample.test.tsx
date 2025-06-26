@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import Home from "@/app/page";
+import Search from "@/app/search/page";
 
 describe("Sample Test Suite", () => {
   it("should pass a sample test", () => {
-    render(<Home />);
+    render(<Search />);
     const titleElement = screen.getByTestId("title");
     expect(titleElement).toBeInTheDocument();
   });

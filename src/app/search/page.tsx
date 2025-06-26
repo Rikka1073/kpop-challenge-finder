@@ -36,7 +36,7 @@ export default function Search() {
     <>
       <Layout>
         <Header />
-        <h2 className="text-4xl font-bold mb-3 text-center text-violet-500">
+        <h2 className="text-4xl font-bold mb-3 text-center text-violet-500" data-testid="title">
           ダンスチャレンジ検索
         </h2>
         <div className="text-center mb-6">お気に入りの楽曲やグループを選んで検索しよう！</div>
