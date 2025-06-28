@@ -124,12 +124,20 @@ export default function Search() {
           <div className="flex justify-between mb-4 items-center">
             <h3 className="text-2xl font-bold mb-3">検索結果（{filteredData.length}件）</h3>
           </div>
-          {filteredData &&
+          {filteredData && filteredData.length > 0 ? (
             filteredData.map((video: videos) => (
               <div key={video.id} className="mb-4">
                 <VideoCard video={video} />
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="py-10">
+              <p className="font-bold text-xl text-center mb-4">
+                条件に一致する動画が見つかりませんでした
+              </p>
+              <p className="font-bold text-md text-center">別の条件で検索してみてください</p>
+            </div>
+          )}
         </div>
       </Layout>
     </>
