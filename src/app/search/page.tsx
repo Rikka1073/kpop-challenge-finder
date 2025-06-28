@@ -4,7 +4,7 @@ import { Header } from "@/components/common/header";
 import { VideoCard } from "@/components/feature/videoCard";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
-import { videos } from "@/types";
+import { Record, Videos } from "@/types";
 import {
   fetchGroups,
   fetchSongs,
@@ -14,10 +14,16 @@ import {
 } from "@/utils/supabaseFunction";
 import { useState } from "react";
 import useSWR from "swr";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Search() {
   // 選択されたグループまたは楽曲のIDを管理するための状態
   const [id, setId] = useState("");
+  const [selected, setSelected] = useState(false);
+  const [record, setRecord] = useState<Record[]>([]);
+
+  // ユニークなIDを生成
+  const uniqueId = uuidv4();
 
   // SWRを使用してデータを取得
   const { data: songs, error: songsError, isLoading: songsLoading } = useSWR("songs", fetchSongs);
@@ -75,7 +81,18 @@ export default function Search() {
       video_songs.some((vs) => vs.video_id === video.id && vs.song_id === id)
   );
 
-  console.log("Filtered Demo Data:", filteredData);
+  const onclickButton = (id: string, select: string) => {
+    const newRecords = [...record, { id: uniqueId, name: select }];
+    setRecord(newRecords);
+    setId(id);
+    setSelected(true);
+  };
+
+  const onclickClear = () => {
+    setRecord([]);
+    setId("");
+    setSelected(false);
+  };
 
   return (
     <>
@@ -94,7 +111,7 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => setId(item.id)}
+                  onClick={() => onclickButton(item.id, item.song_name)}
                   className="rounded-2xl"
                 >
                   #{item.song_name}
@@ -111,7 +128,7 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => setId(item.id)}
+                  onClick={() => onclickButton(item.id, item.group_name)}
                   className="rounded-2xl"
                 >
                   #{item.group_name}
@@ -120,12 +137,23 @@ export default function Search() {
           </div>
         </div>
 
+        {selected && (
+          <div className="mb-8">
+            <h4 className="text-xl font-bold mb-3">選択中の条件</h4>
+            <div className="flex flex-wrap gap-2">
+              {record &&
+                record.map((selectedItem) => <div key={selectedItem.id}>{selectedItem.name}</div>)}
+            </div>
+            <button onClick={onclickClear}>全てクリア</button>
+          </div>
+        )}
+
         <div>
           <div className="flex justify-between mb-4 items-center">
             <h3 className="text-2xl font-bold mb-3">検索結果（{filteredData.length}件）</h3>
           </div>
           {filteredData && filteredData.length > 0 ? (
-            filteredData.map((video: videos) => (
+            filteredData.map((video: Videos) => (
               <div key={video.id} className="mb-4">
                 <VideoCard video={video} />
               </div>
