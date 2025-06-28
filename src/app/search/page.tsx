@@ -4,7 +4,14 @@ import { Header } from "@/components/common/header";
 import { VideoCard } from "@/components/feature/videoCard";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
-import { fetchSongs } from "@/utils/supabaseFunction";
+import { videos } from "@/types";
+import {
+  fetchGroups,
+  fetchSongs,
+  fetchVideoGroups,
+  fetchVideos,
+  fetchVideoSongs,
+} from "@/utils/supabaseFunction";
 import { useState } from "react";
 import useSWR from "swr";
 
@@ -13,25 +20,63 @@ export default function Search() {
   const [id, setId] = useState("");
 
   // SWRを使用してデータを取得
-  const { data, error, isLoading } = useSWR("songs", fetchSongs);
+  const { data: songs, error: songsError, isLoading: songsLoading } = useSWR("songs", fetchSongs);
+  const {
+    data: videos,
+    error: videosError,
+    isLoading: videosLoading,
+  } = useSWR("videos", fetchVideos);
+  const {
+    data: video_songs,
+    error: video_songsError,
+    isLoading: video_songsLoading,
+  } = useSWR("videos_songs", fetchVideoSongs);
+  const {
+    data: groups,
+    error: groupsError,
+    isLoading: groupsLoading,
+  } = useSWR("groups", fetchGroups);
+  const {
+    data: video_groups,
+    error: video_groupsError,
+    isLoading: video_groupsLoading,
+  } = useSWR("videos_groups", fetchVideoGroups);
 
-  if (error) {
+  if (songsError || videosError || video_songsError || groupsError || video_groupsError) {
     return <div>エラーが発生しました</div>;
-  } else if (isLoading || !data) {
+  } else if (
+    songsLoading ||
+    videosLoading ||
+    video_songsLoading ||
+    groupsLoading ||
+    video_groupsLoading ||
+    !groups ||
+    !video_groups ||
+    !songs ||
+    !videos ||
+    !video_songs
+  ) {
     return <div>読み込み中...</div>;
   }
 
-  // デモデータからグループと楽曲のユニークな値を取得
-  const uniqueGroups = data.filter(
+  // データからグループと楽曲のユニークな値を取得;
+  const uniqueGroups = groups.filter(
     (item, index, self) => index === self.findIndex((v) => v.group_name === item.group_name)
   );
 
-  const uniqueSong = data.filter(
+  const uniqueSong = songs.filter(
     (item, index, self) => index === self.findIndex((v) => v.song_name === item.song_name)
   );
 
   // 選択されたグループまたは楽曲に基づいてデータをフィルタリング
-  const filteredDemoData = data.filter((item) => item.song_name === id || item.group_name === id);
+  const filteredData = videos.filter(
+    (video) =>
+      video_groups.some((vg) => vg.video_id === video.id && vg.group_id === id) ||
+      video_songs.some((vs) => vs.video_id === video.id && vs.song_id === id)
+  );
+
+  console.log("Filtered Demo Data:", filteredData);
+
   return (
     <>
       <Layout>
@@ -49,7 +94,7 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => setId(item.song_name)}
+                  onClick={() => setId(item.id)}
                   className="rounded-2xl"
                 >
                   #{item.song_name}
@@ -66,7 +111,7 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => setId(item.group_name)}
+                  onClick={() => setId(item.id)}
                   className="rounded-2xl"
                 >
                   #{item.group_name}
@@ -77,16 +122,14 @@ export default function Search() {
 
         <div>
           <div className="flex justify-between mb-4 items-center">
-            <h3 className="text-2xl font-bold mb-3">検索結果（{filteredDemoData.length}件）</h3>
+            <h3 className="text-2xl font-bold mb-3">検索結果（{filteredData.length}件）</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredDemoData &&
-              filteredDemoData.map((video) => (
-                <div key={video.id} className="mb-4">
-                  <VideoCard video={video} />
-                </div>
-              ))}
-          </div>
+          {filteredData &&
+            filteredData.map((video: videos) => (
+              <div key={video.id} className="mb-4">
+                <VideoCard video={video} />
+              </div>
+            ))}
         </div>
       </Layout>
     </>
