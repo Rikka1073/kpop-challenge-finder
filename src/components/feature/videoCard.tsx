@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { Card, CardTitle } from "../ui/card";
-import { videos } from "@/types";
+import { Videos } from "@/types";
 
 type VideoCardProps = {
-  video: videos;
+  video: Videos;
 };
 
 // view_countのフォーマット関数
@@ -23,6 +23,7 @@ const formatViewCount = (views: number) => {
 
 export const VideoCard = ({ video }: VideoCardProps) => {
   const { title, thumbnail_url, view_count } = video;
+
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
