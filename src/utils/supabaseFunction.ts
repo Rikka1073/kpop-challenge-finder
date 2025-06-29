@@ -1,5 +1,23 @@
 import { supabase } from "./supabase";
 
+export const fetchVideoWithTags = async () => {
+  const { data, error } = await supabase
+    .from("videos")
+    .select(`*, video_groups(groups(id, group_name)), video_songs(songs(id, song_name))`);
+  if (error) {
+    console.log("Error fetching:", error);
+  } else {
+    console.log("fetched successfully:", data);
+  }
+
+  if (data) {
+    return data;
+  } else {
+    console.log("No songs found");
+    return [];
+  }
+};
+
 export const fetchVideos = async () => {
   const { data, error } = await supabase.from("videos").select("*");
   if (error) {
