@@ -9,8 +9,8 @@ import {
   fetchGroups,
   fetchSongs,
   fetchVideoGroups,
-  fetchVideos,
   fetchVideoSongs,
+  fetchVideoWithTags,
 } from "@/utils/supabaseFunction";
 import { useState } from "react";
 import useSWR from "swr";
@@ -31,7 +31,7 @@ export default function Search() {
     data: videos,
     error: videosError,
     isLoading: videosLoading,
-  } = useSWR("videos", fetchVideos);
+  } = useSWR("videos", fetchVideoWithTags);
   const {
     data: video_songs,
     error: video_songsError,
