@@ -112,7 +112,8 @@ export default function Search() {
                   key={item.id}
                   id="item.id"
                   onClick={() => onclickButton(item.id, item.song_name)}
-                  className="rounded-2xl"
+                  className="rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105 bg-white text-black border border-gray-300"
+                  variant="default"
                 >
                   #{item.song_name}
                 </Button>
@@ -129,7 +130,7 @@ export default function Search() {
                   key={item.id}
                   id="item.id"
                   onClick={() => onclickButton(item.id, item.group_name)}
-                  className="rounded-2xl"
+                  className="rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105 bg-white text-black border border-gray-300"
                 >
                   #{item.group_name}
                 </Button>
@@ -138,13 +139,27 @@ export default function Search() {
         </div>
 
         {selected && (
-          <div className="mb-8">
-            <h4 className="text-xl font-bold mb-3">選択中の条件</h4>
+          <div className="mb-8 bg-white p-4 rounded-lg shadow-md">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-xl font-bold">選択中の条件</h4>
+              <Button
+                onClick={onclickClear}
+                className="hover:text-red-500 hover:bg-purple-50 font-bold bg-white text-black"
+              >
+                全てクリア
+              </Button>
+            </div>
             <div className="flex flex-wrap gap-2">
               {record &&
-                record.map((selectedItem) => <div key={selectedItem.id}>{selectedItem.name}</div>)}
+                record.map((selectedItem) => (
+                  <div
+                    key={selectedItem.id}
+                    className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm"
+                  >
+                    {selectedItem.name}
+                  </div>
+                ))}
             </div>
-            <button onClick={onclickClear}>全てクリア</button>
           </div>
         )}
 
