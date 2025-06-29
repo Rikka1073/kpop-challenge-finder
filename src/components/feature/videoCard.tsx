@@ -22,7 +22,7 @@ const formatViewCount = (views: number) => {
 };
 
 export const VideoCard = ({ video }: VideoCardProps) => {
-  const { title, thumbnail_url, view_count } = video;
+  const { title, thumbnail_url, view_count, video_groups, video_songs } = video;
 
   return (
     <>
@@ -41,10 +41,18 @@ export const VideoCard = ({ video }: VideoCardProps) => {
           <Card className="rounded-b-xl px-2">
             <CardTitle className="mb-6">{title}</CardTitle>
             <div className="flex items-center gap-2 mb-2">
-              <Badge className="bg-fuchsia-100 text-purple-600 font-bold">aespa</Badge>
-              <Badge className="bg-fuchsia-100 text-purple-600 font-bold">LE SSERAFIM</Badge>
+              {video_groups.map((badge) => (
+                <Badge className="bg-fuchsia-100 text-purple-600 font-bold" key={badge.groups.id}>
+                  <span>{badge.groups.group_name}</span>
+                </Badge>
+              ))}
+              <Badge className="bg-fuchsia-100 text-purple-600 font-bold"></Badge>
             </div>
-            <Badge className="bg-red-100 text-red-600 font-bold">#Spicy</Badge>
+            {video_songs.map((badge) => (
+              <Badge className="bg-red-100 text-red-600 font-bold" key={badge.songs.id}>
+                <span>#{badge.songs.song_name}</span>
+              </Badge>
+            ))}
           </Card>
         </div>
       </div>
