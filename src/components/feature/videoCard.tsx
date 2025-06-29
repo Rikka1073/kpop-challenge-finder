@@ -46,7 +46,6 @@ export const VideoCard = ({ video }: VideoCardProps) => {
                   <span>{badge.groups.group_name}</span>
                 </Badge>
               ))}
-              <Badge className="bg-fuchsia-100 text-purple-600 font-bold"></Badge>
             </div>
             {video_songs.map((badge) => (
               <Badge className="bg-red-100 text-red-600 font-bold" key={badge.songs.id}>
