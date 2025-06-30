@@ -1,36 +1,37 @@
 import { supabase } from "./supabase";
 
-export const fetchVideoWithTags = async () => {
+// 全ての動画を取得（初期表示用）
+export const getAllVideos = async () => {
   const { data, error } = await supabase
     .from("videos")
     .select(`*, video_groups(groups(id, group_name)), video_songs(songs(id, song_name))`);
   if (error) {
-    console.log("Error fetching:", error);
-  } else {
-    console.log("fetched successfully:", data);
-  }
-
-  if (data) {
+    console.log("Error fetching videos:", error);
+  } else if (data) {
+    console.log("Videos fetched successfully:", data);
     return data;
-  } else {
-    console.log("No songs found");
-    return [];
   }
 };
 
-export const fetchVideos = async () => {
-  const { data, error } = await supabase.from("videos").select("*");
-  if (error) {
-    console.log("Error fetching videos:", error);
-  } else {
-    console.log("Videos fetched successfully:", data);
-  }
+// グループIDで動画をフィルタリング
+export const getMatchedGroupId = async (id: string) => {
+  console.log("Fetching videos for group or song ID:", id);
+  const { data, error } = await supabase
+    .from("videos")
+    .select(
+      `
+      *, 
+      video_groups!inner(groups(id, group_name)), 
+      video_songs!inner(songs(id, song_name))
+    `
+    )
+    .eq("video_songs.song_id", id);
 
-  if (data) {
+  if (error) {
+    console.log("Error fetching matched:", error);
+  } else if (data) {
+    console.log("Matched fetched successfully:", data);
     return data;
-  } else {
-    console.log("No videos found");
-    return [];
   }
 };
 
