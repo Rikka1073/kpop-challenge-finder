@@ -26,34 +26,32 @@ export const VideoCard = ({ video }: VideoCardProps) => {
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-        <div className="rounded-2xl transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105">
-          <div className="relative">
-            <Image
-              src={thumbnail_url || "https://via.placeholder.com/360x640"}
-              alt={title}
-              width={360}
-              height={640}
-              className="w-full aspect-[9/16] object-cover rounded-t-2xl"
-            />
-            <Badge className="absolute bottom-2 left-2">{formatViewCount(view_count)} viwes</Badge>
-          </div>
-          <Card className="rounded-b-xl px-2">
-            <CardTitle className="mb-6">{title}</CardTitle>
-            <div className="flex items-center gap-2 mb-2">
-              {video_groups.map((badge) => (
-                <Badge className="bg-fuchsia-100 text-purple-600 font-bold" key={badge.groups.id}>
-                  <span>{badge.groups.group_name}</span>
-                </Badge>
-              ))}
-            </div>
-            {video_songs.map((badge) => (
-              <Badge className="bg-red-100 text-red-600 font-bold" key={badge.songs.id}>
-                <span>#{badge.songs.song_name}</span>
+      <div className="rounded-2xl transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105">
+        <div className="relative">
+          <Image
+            src={thumbnail_url || "https://via.placeholder.com/360x640"}
+            alt={title}
+            width={360}
+            height={640}
+            className="w-full aspect-[9/16] object-cover rounded-t-2xl"
+          />
+          <Badge className="absolute bottom-2 left-2">{formatViewCount(view_count)} viwes</Badge>
+        </div>
+        <Card className="rounded-b-xl px-2">
+          <CardTitle className="mb-6">{title}</CardTitle>
+          <div className="flex items-center gap-2 mb-2">
+            {video_groups.map((badge) => (
+              <Badge className="bg-fuchsia-100 text-purple-600 font-bold" key={badge.groups.id}>
+                <span>{badge.groups.group_name}</span>
               </Badge>
             ))}
-          </Card>
-        </div>
+          </div>
+          {video_songs.map((badge) => (
+            <Badge className="bg-red-100 text-red-600 font-bold" key={badge.songs.id}>
+              <span>#{badge.songs.song_name}</span>
+            </Badge>
+          ))}
+        </Card>
       </div>
     </>
   );
