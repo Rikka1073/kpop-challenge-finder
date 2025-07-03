@@ -10,20 +10,19 @@ import {
   fetchSongs,
   fetchVideoGroups,
   fetchVideoSongs,
-  fetchVideoWithTags,
+  getAllVideos,
+  getMatchedGroupId,
 } from "@/utils/supabaseFunction";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Search() {
   // 選択されたグループまたは楽曲のIDを管理するための状態
-  const [id, setId] = useState("");
+  // const [id, setId] = useState("");
   const [selected, setSelected] = useState(false);
   const [record, setRecord] = useState<Record[]>([]);
-
-  // ユニークなIDを生成
-  const uniqueId = uuidv4();
+  const [filteredData, setFilteredData] = useState<Videos[]>([]);
 
   // SWRを使用してデータを取得
   const { data: songs, error: songsError, isLoading: songsLoading } = useSWR("songs", fetchSongs);
@@ -31,7 +30,7 @@ export default function Search() {
     data: videos,
     error: videosError,
     isLoading: videosLoading,
-  } = useSWR("videos", fetchVideoWithTags);
+  } = useSWR("videos", getAllVideos);
   const {
     data: video_songs,
     error: video_songsError,
@@ -47,6 +46,13 @@ export default function Search() {
     error: video_groupsError,
     isLoading: video_groupsLoading,
   } = useSWR("videos_groups", fetchVideoGroups);
+
+  //初期表示の動画データ
+  useEffect(() => {
+    if (videos) {
+      setFilteredData(videos);
+    }
+  }, [videos]);
 
   if (songsError || videosError || video_songsError || groupsError || video_groupsError) {
     return <div>エラーが発生しました</div>;
@@ -65,6 +71,9 @@ export default function Search() {
     return <div>読み込み中...</div>;
   }
 
+  // ユニークなIDを生成
+  const uniqueId = uuidv4();
+
   // データからグループと楽曲のユニークな値を取得;
   const uniqueGroups = groups.filter(
     (item, index, self) => index === self.findIndex((v) => v.group_name === item.group_name)
@@ -74,24 +83,38 @@ export default function Search() {
     (item, index, self) => index === self.findIndex((v) => v.song_name === item.song_name)
   );
 
-  // 選択されたグループまたは楽曲に基づいてデータをフィルタリング
-  const filteredData = videos.filter(
-    (video) =>
-      video_groups.some((vg) => vg.video_id === video.id && vg.group_id === id) ||
-      video_songs.some((vs) => vs.video_id === video.id && vs.song_id === id)
-  );
+  // 選択されたグループまたは楽曲に基づいてデータをフィルタリング;
+  // const filteredData = videos.filter(
+  //   (video) =>
+  //     video_groups.some((vg) => vg.video_id === video.id && vg.group_id === id) ||
+  //     video_songs.some((vs) => vs.video_id === video.id && vs.song_id === id)
+  // );
 
-  const onclickButton = (id: string, select: string) => {
+  const onclickButton = async (
+    id: string,
+    select: string,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    const buttonName = event.currentTarget.name;
+    console.log("Button Name:", buttonName);
     const newRecords = [...record, { id: uniqueId, name: select }];
     setRecord(newRecords);
-    setId(id);
     setSelected(true);
+
+    try {
+      const filteredData = await getMatchedGroupId(id);
+      // console.log("Filtered data:", filteredData);
+      setFilteredData(filteredData ?? []);
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+      setFilteredData([]);
+    }
   };
 
   const onclickClear = () => {
     setRecord([]);
-    setId("");
     setSelected(false);
+    setFilteredData([]);
   };
 
   return (
@@ -111,7 +134,8 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => onclickButton(item.id, item.song_name)}
+                  name="songs"
+                  onClick={(event) => onclickButton(item.id, item.song_name, event)}
                   className="rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105 bg-white text-black border border-gray-300"
                   variant="default"
                 >
@@ -129,7 +153,8 @@ export default function Search() {
                 <Button
                   key={item.id}
                   id="item.id"
-                  onClick={() => onclickButton(item.id, item.group_name)}
+                  name="groups"
+                  onClick={(event) => onclickButton(item.id, item.group_name, event)}
                   className="rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105 bg-white text-black border border-gray-300"
                 >
                   #{item.group_name}
@@ -167,12 +192,15 @@ export default function Search() {
           <div className="flex justify-between mb-4 items-center">
             <h3 className="text-2xl font-bold mb-3">検索結果（{filteredData.length}件）</h3>
           </div>
+
           {filteredData && filteredData.length > 0 ? (
-            filteredData.map((video: Videos) => (
-              <div key={video.id} className="mb-4">
-                <VideoCard video={video} />
-              </div>
-            ))
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              {filteredData.map((video: Videos) => (
+                <div key={video.id} className="mb-4">
+                  <VideoCard video={video} />
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="py-10">
               <p className="font-bold text-xl text-center mb-4">
