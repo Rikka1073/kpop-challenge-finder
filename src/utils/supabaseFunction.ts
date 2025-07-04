@@ -14,24 +14,64 @@ export const getAllVideos = async () => {
 };
 
 // グループIDで動画をフィルタリング
-export const getMatchedGroupId = async (id: string) => {
+export const getMatchedGroupId = async (id: string, buttonName: string) => {
   console.log("Fetching videos for group or song ID:", id);
-  const { data, error } = await supabase
-    .from("videos")
-    .select(
-      `
+  if (buttonName === "songs") {
+    const { data, error } = await supabase
+      .from("videos")
+      .select(
+        `
       *, 
       video_groups!inner(groups(id, group_name)), 
       video_songs!inner(songs(id, song_name))
     `
-    )
-    .eq("video_songs.song_id", id);
+      )
+      .eq("video_songs.song_id", id);
 
-  if (error) {
-    console.log("Error fetching matched:", error);
-  } else if (data) {
-    console.log("Matched fetched successfully:", data);
-    return data;
+    if (error) {
+      console.log("Error fetching matched:", error);
+    } else if (data) {
+      console.log("Matched fetched successfully:", data);
+      return data;
+    }
+  } else if (buttonName === "groups") {
+    console.log("groups:", id);
+    const { data: videoIds, error: videoError } = await supabase
+      .from("video_groups")
+      .select("video_id")
+      .eq("group_id", id);
+
+    if (videoError) {
+      console.log("Error fetching video IDs:", videoError);
+    }
+
+    if (!videoIds) {
+      console.log("No videos found for group ID:", videoIds);
+      return [];
+    }
+
+    console.log("Video IDs fetched successfully:", videoIds);
+
+    const videoIdlist = videoIds.map((item) => item.video_id);
+    console.log("Video ID list:", videoIdlist);
+
+    const { data, error } = await supabase
+      .from("videos")
+      .select(
+        `
+      *, 
+      video_groups(groups(id, group_name)), 
+      video_songs(songs(id, song_name))
+    `
+      )
+      .in("id", videoIdlist);
+
+    if (error) {
+      console.log("Error fetching videos:", error);
+    } else if (data) {
+      console.log("Videos fetched successfully:", data);
+      return data;
+    }
   }
 };
 
