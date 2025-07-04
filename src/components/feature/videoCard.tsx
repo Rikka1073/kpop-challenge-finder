@@ -38,7 +38,7 @@ export const VideoCard = ({ video }: VideoCardProps) => {
           <Badge className="absolute bottom-2 left-2">{formatViewCount(view_count)} viwes</Badge>
         </div>
         <Card className="rounded-b-xl px-2">
-          <CardTitle className="mb-6">{title}</CardTitle>
+          <CardTitle className="mb-6 line-clamp-2">{title}</CardTitle>
           <div className="flex items-center gap-2 mb-2">
             {video_groups.map((badge) => (
               <Badge className="bg-fuchsia-100 text-purple-600 font-bold" key={badge.groups.id}>
