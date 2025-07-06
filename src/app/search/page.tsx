@@ -5,14 +5,7 @@ import { VideoCard } from "@/components/feature/videoCard";
 import { Layout } from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { Record, Videos } from "@/types";
-import {
-  fetchGroups,
-  fetchSongs,
-  fetchVideoGroups,
-  fetchVideoSongs,
-  getAllVideos,
-  getMatchedGroupId,
-} from "@/utils/supabaseFunction";
+import { fetchGroups, fetchSongs, getAllVideos, getMatchedGroupId } from "@/utils/supabaseFunction";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -28,20 +21,10 @@ export default function Search() {
     isLoading: videosLoading,
   } = useSWR("videos", getAllVideos);
   const {
-    data: video_songs,
-    error: video_songsError,
-    isLoading: video_songsLoading,
-  } = useSWR("videos_songs", fetchVideoSongs);
-  const {
     data: groups,
     error: groupsError,
     isLoading: groupsLoading,
   } = useSWR("groups", fetchGroups);
-  const {
-    data: video_groups,
-    error: video_groupsError,
-    isLoading: video_groupsLoading,
-  } = useSWR("videos_groups", fetchVideoGroups);
 
   //初期表示の動画データ
   useEffect(() => {
@@ -50,20 +33,9 @@ export default function Search() {
     }
   }, [videos]);
 
-  if (songsError || videosError || video_songsError || groupsError || video_groupsError) {
+  if (songsError || videosError || groupsError) {
     return <div>エラーが発生しました</div>;
-  } else if (
-    songsLoading ||
-    videosLoading ||
-    video_songsLoading ||
-    groupsLoading ||
-    video_groupsLoading ||
-    !groups ||
-    !video_groups ||
-    !songs ||
-    !videos ||
-    !video_songs
-  ) {
+  } else if (songsLoading || videosLoading || groupsLoading || !groups || !songs || !videos) {
     return <div>読み込み中...</div>;
   }
 

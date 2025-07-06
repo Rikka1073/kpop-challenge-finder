@@ -106,35 +106,3 @@ export const fetchGroups = async () => {
     return [];
   }
 };
-
-export const fetchVideoSongs = async () => {
-  const { data, error } = await supabase.from("video_songs").select("*");
-  if (error) {
-    console.log("Error fetching videoSongs:", error);
-  } else {
-    console.log("VideoSongs fetched successfully:", data);
-  }
-
-  if (data) {
-    return data;
-  } else {
-    console.log("No videoSongs found");
-    return [];
-  }
-};
-
-export const fetchVideoGroups = async () => {
-  const { data, error } = await supabase.from("video_groups").select("*");
-  if (error) {
-    console.log("Error fetching videoSongs:", error);
-  } else {
-    console.log("VideoSongs fetched successfully:", data);
-  }
-
-  if (data) {
-    return data;
-  } else {
-    console.log("No videoSongs found");
-    return [];
-  }
-};
