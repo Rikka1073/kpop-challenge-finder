@@ -15,13 +15,9 @@ import {
 } from "@/utils/supabaseFunction";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { v4 as uuidv4 } from "uuid";
 
 export default function Search() {
-  // 選択されたグループまたは楽曲のIDを管理するための状態
-  // const [id, setId] = useState("");
-  const [selected, setSelected] = useState(false);
-  const [record, setRecord] = useState<Record[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Record[]>([]);
   const [filteredData, setFilteredData] = useState<Videos[]>([]);
 
   // SWRを使用してデータを取得
@@ -71,9 +67,6 @@ export default function Search() {
     return <div>読み込み中...</div>;
   }
 
-  // ユニークなIDを生成
-  const uniqueId = uuidv4();
-
   // データからグループと楽曲のユニークな値を取得;
   const uniqueGroups = groups.filter(
     (item, index, self) => index === self.findIndex((v) => v.group_name === item.group_name)
@@ -83,27 +76,27 @@ export default function Search() {
     (item, index, self) => index === self.findIndex((v) => v.song_name === item.song_name)
   );
 
-  // 選択されたグループまたは楽曲に基づいてデータをフィルタリング;
-  // const filteredData = videos.filter(
-  //   (video) =>
-  //     video_groups.some((vg) => vg.video_id === video.id && vg.group_id === id) ||
-  //     video_songs.some((vs) => vs.video_id === video.id && vs.song_id === id)
-  // );
-
   const onclickButton = async (
     id: string,
     select: string,
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     const buttonName = event.currentTarget.name;
-    console.log("Button Name:", buttonName);
-    const newRecords = [...record, { id: uniqueId, name: select }];
-    setRecord(newRecords);
-    setSelected(true);
+    setSelectedItems((prev) => {
+      const isSelected = prev.some((item) => item.id === id);
+      if (isSelected) {
+        // 既に選択されている場合は削除
+        const updatedSelectedItems = prev.filter((item) => item.id !== id);
+        return updatedSelectedItems;
+      } else {
+        // 新たに選択する場合は追加
+        const updatedSelectedItems = [...prev, { id, name: select }];
+        return updatedSelectedItems;
+      }
+    });
 
     try {
-      const filteredData = await getMatchedGroupId(id);
-      // console.log("Filtered data:", filteredData);
+      const filteredData = await getMatchedGroupId(id, buttonName);
       setFilteredData(filteredData ?? []);
     } catch (error) {
       console.error("Error fetching filtered data:", error);
@@ -112,8 +105,7 @@ export default function Search() {
   };
 
   const onclickClear = () => {
-    setRecord([]);
-    setSelected(false);
+    setSelectedItems([]);
     setFilteredData([]);
   };
 
@@ -136,7 +128,7 @@ export default function Search() {
                   id="item.id"
                   name="songs"
                   onClick={(event) => onclickButton(item.id, item.song_name, event)}
-                  className="rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105 bg-white text-black border border-gray-300"
+                  className={`rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105  text-black border border-gray-300 ${selectedItems.some((selected) => selected.id === item.id) ? " bg-purple-400" : "bg-white"}`}
                   variant="default"
                 >
                   #{item.song_name}
@@ -155,7 +147,7 @@ export default function Search() {
                   id="item.id"
                   name="groups"
                   onClick={(event) => onclickButton(item.id, item.group_name, event)}
-                  className="rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105 bg-white text-black border border-gray-300"
+                  className={`rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105  text-black border border-gray-300 ${selectedItems.some((selected) => selected.id === item.id) ? " bg-purple-400" : "bg-white"}`}
                 >
                   #{item.group_name}
                 </Button>
@@ -163,7 +155,7 @@ export default function Search() {
           </div>
         </div>
 
-        {selected && (
+        {selectedItems.length > 0 && (
           <div className="mb-8 bg-white p-4 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-xl font-bold">選択中の条件</h4>
@@ -175,8 +167,8 @@ export default function Search() {
               </Button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {record &&
-                record.map((selectedItem) => (
+              {selectedItems &&
+                selectedItems.map((selectedItem) => (
                   <div
                     key={selectedItem.id}
                     className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm"
