@@ -9,7 +9,6 @@ type VideoCardProps = {
 
 // view_countのフォーマット関数
 const formatViewCount = (views: number) => {
-  console.log("Original view count:", views);
   if (views >= 1000000) {
     const formattedViews = (views / 1000000).toFixed(1) + "M";
     return formattedViews;

@@ -100,7 +100,11 @@ export default function Search() {
                   id="item.id"
                   name="songs"
                   onClick={(event) => onclickButton(item.id, item.song_name, event)}
-                  className={`rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105  text-black border border-gray-300 ${selectedItems.some((selected) => selected.id === item.id) ? " bg-purple-400" : "bg-white"}`}
+                  className={`rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105  text-black border border-gray-300 ${
+                    selectedItems.some((selected) => selected.id === item.id)
+                      ? " bg-purple-400"
+                      : "bg-white"
+                  }`}
                   variant="default"
                 >
                   #{item.song_name}
@@ -119,7 +123,11 @@ export default function Search() {
                   id="item.id"
                   name="groups"
                   onClick={(event) => onclickButton(item.id, item.group_name, event)}
-                  className={`rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105  text-black border border-gray-300 ${selectedItems.some((selected) => selected.id === item.id) ? " bg-purple-400" : "bg-white"}`}
+                  className={`rounded-2xl duration-200 hover:shadow-lg transition-all transform hover:scale-105  text-black border border-gray-300 ${
+                    selectedItems.some((selected) => selected.id === item.id)
+                      ? " bg-purple-400"
+                      : "bg-white"
+                  }`}
                 >
                   #{item.group_name}
                 </Button>
