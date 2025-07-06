@@ -5,7 +5,7 @@ import { Layout } from "@/components/layout/layout";
 // 型
 import { Videos } from "@/types";
 // ユーティリティ関数
-import { fetchVideoWithTags, getAllVideos, getMatchedGroupId } from "@/utils/supabaseFunction";
+import { getAllVideos, getMatchedGroupId } from "@/utils/supabaseFunction";
 
 export default async function Home() {
   // データを取得する関数を呼び出す
@@ -13,7 +13,7 @@ export default async function Home() {
   console.log("Fetched data:", data);
   getMatchedGroupId("0387c4c9-6101-4e0f-bf81-21c45a5514ee");
 
-  const videoId = "GqbK3rcQkg8";
+  const videoId = "m9fiy4qhhqw";
   const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
   const response = await fetch(
@@ -30,7 +30,7 @@ export default async function Home() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {data &&
             data.map((video: Videos) => (
-              <div key={video.id}>
+              <div key={video.id} className="h-fit">
                 <VideoCard video={video} />
               </div>
             ))}
