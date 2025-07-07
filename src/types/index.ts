@@ -21,4 +21,5 @@ export type Videos = {
 export type Record = {
   id: string;
   name: string;
+  type: string;
 };
